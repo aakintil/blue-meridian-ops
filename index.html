@@ -26,8 +26,10 @@
 
   :root {
     --blue: #0073E6;
+    --navy: #0A2540;
     --line: rgba(255,255,255,0.16);
     --pad: 48px;
+    --gutter: var(--pad);
     --footer-h: 46px;
     --display: 'Space Grotesk', sans-serif;
     --body: 'Neuton', Georgia, serif;
@@ -58,7 +60,7 @@
   nav {
     height: 56px;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 var(--pad);
+    padding: 0 var(--gutter);
     border-bottom: 1px solid var(--line);
     gap: 16px;
   }
@@ -82,7 +84,7 @@
   .nav-email:hover { opacity: 1; }
 
   /* ── HERO ── */
-  .hero { padding: 50px var(--pad) 44px; border-bottom: 1px solid var(--line); }
+  .hero { padding: 50px var(--gutter) 44px; border-bottom: 1px solid var(--line); }
 
   .hero-headline, .hero-sub, .hero-cta {
     opacity: 0;
@@ -111,16 +113,29 @@
     line-height: 1.55; opacity: 0.85; max-width: 520px; margin-bottom: 26px;
   }
 
-  .hero-cta {
+  .btn {
     font-family: var(--display); display: inline-block;
     font-size: 13px; font-weight: 500; color: white; text-decoration: none;
-    border: 1px solid rgba(255,255,255,0.45);
+    background: var(--navy); border: 1px solid var(--navy);
     padding: 11px 22px; border-radius: 3px;
-    transition: background 0.15s, border-color 0.15s;
-    white-space: nowrap;
+    position: relative; isolation: isolate; overflow: hidden;
+    transition: color 0.35s ease 0.05s, border-color 0.45s ease;
+    white-space: nowrap; align-self: flex-start;
   }
 
-  .hero-cta:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.8); }
+  /* white fill wipes in from the left on hover, sits behind the label */
+  .btn::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: #fff;
+    transform: scaleX(0); transform-origin: left center;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn:hover, .btn:focus-visible { color: var(--navy); border-color: #fff; }
+  .btn:hover::before, .btn:focus-visible::before { transform: scaleX(1); }
+
+  /* leaving: the fill retreats the way it came, a touch quicker */
+  .btn:not(:hover):not(:focus-visible)::before { transition-duration: 0.35s; }
 
   /* ── TABS ── */
   .tabs { height: 47px; display: flex; border-bottom: 1px solid var(--line); }
@@ -152,7 +167,7 @@
     position: fixed; bottom: 0; left: 0; right: 0;
     height: var(--footer-h);
     display: flex; align-items: center;
-    padding: 0 var(--pad);
+    padding: 0 var(--gutter);
     border-top: 1px solid var(--line);
     background: var(--blue); z-index: 20;
   }
@@ -173,7 +188,7 @@
     position: fixed; left: 0; right: 0; bottom: var(--footer-h);
     opacity: 0; transition: opacity 0.45s ease;
     pointer-events: none;
-    padding: var(--pad);
+    padding: var(--pad) var(--gutter);
     display: flex; flex-direction: column; justify-content: center;
     overflow: hidden;
   }
@@ -196,6 +211,7 @@
 
   .whatwedo p { margin-bottom: 18px; }
   .whatwedo p:last-child { margin-bottom: 0; }
+  .whatwedo-body p:last-of-type { margin-bottom: 0; }
   .whatwedo .lead { opacity: 1; font-size: clamp(19px, 1.7vw, 23px); }
 
   /* ── HOW ── */
@@ -307,14 +323,82 @@
 
   .contact-link:hover { opacity: 0.7; }
 
-  .contact-link-secondary {
-    font-family: var(--display); font-size: 13px; font-weight: 400;
-    opacity: 0.65; color: white; text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,0.4);
-    padding-bottom: 2px; width: fit-content; transition: opacity 0.15s;
+
+  /* ══ DESKTOP: use the width ══ */
+  @media (min-width: 768px) {
+    :root {
+      --pad: clamp(32px, 4vw, 72px);
+      /* content column tops out at 1600px, borders and tabs stay full width */
+      --gutter: max(var(--pad), calc((100vw - 1600px) / 2));
+      --footer-h: clamp(46px, 3.4vw, 56px);
+    }
+
+    /* nav */
+    nav { height: clamp(56px, 4.2vw, 68px); }
+    .logo-svg { width: clamp(22px, 1.7vw, 28px); height: clamp(22px, 1.7vw, 28px); }
+    .wordmark { font-size: clamp(14px, 1.1vw, 18px); }
+    .nav-email { font-size: clamp(13px, 1vw, 16px); }
+
+    /* hero: short windows keep the fixed header from eating the panel */
+    .hero { padding-top: clamp(26px, 4.5vh, 50px); padding-bottom: clamp(24px, 4vh, 44px); }
+    .hero-headline { font-size: clamp(28px, min(4vw, 6.8vh), 80px); max-width: 1200px; margin-bottom: clamp(12px, 2vh, 18px); text-wrap: balance; }
+    .hero-sub { font-size: clamp(20px, 1.7vw, 28px); max-width: 1000px; margin-bottom: clamp(18px, 3vh, 26px); text-wrap: pretty; }
+    .btn { font-size: clamp(14px, 1.1vw, 18px); padding: clamp(11px, 1vw, 15px) clamp(22px, 1.8vw, 30px); }
+
+    /* tabs */
+    .tabs { height: clamp(47px, 3.6vw, 60px); }
+    .tab-btn { font-size: clamp(13px, 1.05vw, 17px); }
+
+    .panel { padding-top: clamp(24px, 4.5vh, 56px); padding-bottom: clamp(16px, 3vh, 40px); }
+
+    /* what we do */
+    .whatwedo { max-width: none; font-size: clamp(18px, 1.35vw, 24px); line-height: 1.6; }
+    .whatwedo p { margin-bottom: clamp(12px, 1.6vh, 18px); }
+    .whatwedo .lead { font-size: clamp(20px, 1.9vw, 30px); }
+
+    /* how we work */
+    .step-num { font-size: clamp(11px, 0.85vw, 14px); }
+    .step-title { font-size: clamp(18px, 1.5vw, 25px); }
+    .step-body { font-size: clamp(18px, 1.35vw, 23px); }
+    .differentiator { font-size: clamp(18px, 1.35vw, 23px); }
+
+    /* proof of work */
+    .cases { max-width: none; }
+    .case-title { font-size: clamp(19px, 1.5vw, 25px); }
+    .case-industry, .case-label, .stat-label { font-size: clamp(11px, 0.85vw, 13px); }
+    .case-hook { font-size: clamp(17px, 1.25vw, 21px); }
+    .case-text { font-size: clamp(16px, 1.2vw, 20px); }
+    .stat-value { font-size: clamp(26px, 2.2vw, 38px); }
+
+    /* contact */
+    .contact-headline { font-size: clamp(26px, 3.6vw, 64px); max-width: 900px; }
+    .contact-link { font-size: clamp(16px, 1.4vw, 22px); }
+
+    /* footer */
+    .footer-copy { font-size: clamp(12px, 0.9vw, 14px); }
+    .foot-brand .logo-svg { width: clamp(14px, 1.1vw, 18px); height: clamp(14px, 1.1vw, 18px); }
   }
 
-  .contact-link-secondary:hover { opacity: 1; }
+  /* two columns: big statement left, the reasoning right */
+  @media (min-width: 960px) {
+    .whatwedo {
+      display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      column-gap: clamp(48px, 7vw, 140px); align-items: start;
+    }
+    .whatwedo .lead {
+      font-size: clamp(26px, 2.5vw, 44px); line-height: 1.3;
+      margin-bottom: 0;
+    }
+  }
+
+  /* case studies two across; the third sits under the first at the same width */
+  @media (min-width: 1100px) {
+    .cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; align-items: stretch; }
+    .case { display: flex; flex-direction: column; }
+    .case-head { flex-direction: column; gap: 6px; align-items: flex-start; }
+    .case-cols { grid-template-columns: 1fr; gap: 18px; flex: 1; }
+    .case-stats { margin-top: 22px; }
+  }
 
   /* ══ MOBILE ══ */
   @media (max-width: 767px) {
@@ -330,7 +414,8 @@
 
     .tabs { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; }
     .tabs::-webkit-scrollbar { display: none; }
-    .tab-btn { flex: 0 0 auto; padding: 0 22px; }
+    /* grow to fill the bar when there's room, keep natural width and scroll when there isn't */
+    .tab-btn { flex: 1 0 auto; padding: 0 22px; }
 
     .panel {
       overflow-y: auto; justify-content: flex-start;
@@ -374,7 +459,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .panel, .tab-btn::after, .case { transition: none; }
+    .panel, .tab-btn::after, .case, .btn, .btn::before { transition: none; }
     .hero-headline, .hero-sub, .hero-cta { animation: none; opacity: 1; }
   }
 </style>
@@ -393,7 +478,7 @@
   <div class="hero">
     <h1 class="hero-headline">We find where your operation loses time, then we build the fix.</h1>
     <p class="hero-sub">AI automation and workflow consulting for teams that have outgrown how they currently work.</p>
-    <a href="mailto:hello@thebluemeridian.co" class="hero-cta">Get in touch</a>
+    <a href="mailto:hello@thebluemeridian.co" class="hero-cta btn">Get in touch</a>
   </div>
 
   <div class="tabs" role="tablist" aria-label="Sections">
@@ -407,9 +492,11 @@
 <div class="panel active scrollable" id="panel-what" role="tabpanel">
   <div class="whatwedo">
     <p class="lead">Blue Meridian Ops finds where your operation loses time, then builds the systems to get it back. That usually means AI automation and workflow design, though what it actually means depends on what we find when we look.</p>
+    <div class="whatwedo-body">
     <p>Most of the operations we see run on knowledge that lives in people's heads, which works fine until the person who knows something steps out of the room, and stops working entirely when they leave the company. Decisions get made from memory, reports get rebuilt by hand every month, and follow-ups go missing somewhere between a conversation and an inbox.</p>
     <p>It isn't that people are careless. Nothing in the setup was built to catch any of it, so the same work gets done twice and nobody has time to notice.</p>
     <p>We start by watching how your team actually operates, not how the process doc says it should, then build around what's already there: your tools, your people, your constraints.</p>
+    </div>
   </div>
 </div>
 
@@ -547,7 +634,7 @@
     <p class="contact-headline">If any of this sounds like your operation, let's talk.</p>
     <div class="contact-links">
       <a href="mailto:hello@thebluemeridian.co" class="contact-link">hello@thebluemeridian.co</a>
-      <a href="#" class="contact-link-secondary">Book a call</a>
+      <a href="#" class="btn">Book a call</a>
     </div>
   </div>
 </div>
