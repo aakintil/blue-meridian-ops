@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blue Meridian Ops — AI automation and workflow consulting</title>
+<meta name="description" content="Blue Meridian Ops finds where your operation loses time, then builds the systems to get it back.">
+<meta name="theme-color" content="#0073E6">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://thebluemeridian.co">
+<meta property="og:title" content="Blue Meridian Ops">
+<meta property="og:description" content="We find where your operation loses time, then we build the fix. AI automation and workflow consulting.">
+<meta property="og:image" content="https://thebluemeridian.co/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Blue Meridian Ops">
+<meta name="twitter:description" content="We find where your operation loses time, then we build the fix.">
+<meta name="twitter:image" content="https://thebluemeridian.co/og.png">
+<link rel="canonical" href="https://thebluemeridian.co">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Neuton:ital,wght@0,200;0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #0073E6;
+    --line: rgba(255,255,255,0.16);
+    --pad: 48px;
+    --footer-h: 46px;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Neuton', Georgia, serif;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: var(--body);
+    -webkit-font-smoothing: antialiased;
+    background: var(--blue);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  a:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  /* tabs already show state with the underline, so keyboard focus
+     drives that same underline rather than drawing a second box */
+  .tab-btn:focus-visible { outline: none; opacity: 1; }
+  .tab-btn:focus-visible::after { transform: scaleX(1); }
+
+  /* ── FIXED TOP ── */
+  .top-fixed { position: fixed; top: 0; left: 0; right: 0; z-index: 20; background: var(--blue); }
+
+  nav {
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--pad);
+    border-bottom: 1px solid var(--line);
+    gap: 16px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+
+  .logo-svg { width: 22px; height: 22px; display: block; flex-shrink: 0; }
+
+  .wordmark {
+    font-family: var(--display); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.02em; white-space: nowrap;
+  }
+
+  .nav-email {
+    font-family: var(--display); font-size: 12px; font-weight: 400;
+    text-decoration: none; color: white; opacity: 0.7;
+    transition: opacity 0.15s; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .nav-email:hover { opacity: 1; }
+
+  /* ── HERO ── */
+  .hero { padding: 50px var(--pad) 44px; border-bottom: 1px solid var(--line); }
+
+  .hero-headline, .hero-sub, .hero-cta {
+    opacity: 0;
+    animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .hero-headline { animation-delay: 0.05s; }
+  .hero-sub      { animation-delay: 0.16s; }
+  .hero-cta      { animation-delay: 0.26s; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-headline {
+    font-family: var(--display);
+    font-size: clamp(28px, 3.7vw, 54px);
+    font-weight: 600; line-height: 1.08;
+    letter-spacing: -0.03em; max-width: 800px;
+    margin-bottom: 18px;
+  }
+
+  .hero-sub {
+    font-family: var(--body); font-size: 19px; font-weight: 400;
+    line-height: 1.55; opacity: 0.85; max-width: 520px; margin-bottom: 26px;
+  }
+
+  .hero-cta {
+    font-family: var(--display); display: inline-block;
+    font-size: 13px; font-weight: 500; color: white; text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.45);
+    padding: 11px 22px; border-radius: 3px;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+
+  .hero-cta:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.8); }
+
+  /* ── TABS ── */
+  .tabs { height: 47px; display: flex; border-bottom: 1px solid var(--line); }
+
+  .tab-btn {
+    flex: 1; height: 100%;
+    border: none; border-right: 1px solid var(--line);
+    background: none; cursor: pointer;
+    font-family: var(--display); font-size: 12px; font-weight: 500;
+    color: white; opacity: 0.5;
+    transition: opacity 0.2s ease;
+    white-space: nowrap; position: relative; letter-spacing: 0.01em;
+  }
+
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn:hover { opacity: 0.8; }
+  .tab-btn.active { opacity: 1; }
+
+  .tab-btn::after {
+    content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+    height: 2px; background: white;
+    transform: scaleX(0); transition: transform 0.3s ease;
+  }
+
+  .tab-btn.active::after { transform: scaleX(1); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: var(--footer-h);
+    display: flex; align-items: center;
+    padding: 0 var(--pad);
+    border-top: 1px solid var(--line);
+    background: var(--blue); z-index: 20;
+  }
+
+  .foot-brand { display: flex; align-items: center; gap: 8px; opacity: 0.5; }
+  .foot-brand .logo-svg { width: 14px; height: 14px; }
+  .footer-copy { font-family: var(--display); font-size: 11px; }
+
+  .footer-studio {
+    font-family: var(--display); font-size: 11px; opacity: 0.5;
+    color: white; text-decoration: none; transition: opacity 0.15s;
+  }
+
+  .footer-studio:hover { opacity: 0.9; }
+
+  /* ── PANELS ── */
+  .panel {
+    position: fixed; left: 0; right: 0; bottom: var(--footer-h);
+    opacity: 0; transition: opacity 0.45s ease;
+    pointer-events: none;
+    padding: var(--pad);
+    display: flex; flex-direction: column; justify-content: center;
+    overflow: hidden;
+  }
+
+  .panel.active { opacity: 1; pointer-events: auto; }
+
+  .panel.scrollable {
+    overflow-y: auto; justify-content: flex-start;
+    -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 50px), transparent 100%);
+    mask-image: linear-gradient(to bottom, black calc(100% - 50px), transparent 100%);
+  }
+
+  /* ── WHAT WE DO ── */
+  .whatwedo {
+    font-family: var(--body);
+    font-size: clamp(17px, 1.5vw, 20px);
+    font-weight: 400; line-height: 1.7;
+    max-width: 680px; opacity: 0.92;
+  }
+
+  .whatwedo p { margin-bottom: 18px; }
+  .whatwedo p:last-child { margin-bottom: 0; }
+  .whatwedo .lead { opacity: 1; font-size: clamp(19px, 1.7vw, 23px); }
+
+  /* ── HOW ── */
+  .steps { display: flex; gap: 0; }
+
+  .step { flex: 1; padding-right: 40px; border-right: 1px solid var(--line); margin-right: 40px; }
+  .step:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+
+  .step-num {
+    font-family: var(--display); font-size: 10px; font-weight: 500;
+    opacity: 0.55; letter-spacing: 0.1em; margin-bottom: 14px; display: block;
+  }
+
+  .step-title {
+    font-family: var(--display); font-size: 16px; font-weight: 600;
+    margin-bottom: 10px; letter-spacing: -0.01em;
+  }
+
+  .step-body { font-family: var(--body); font-size: 17px; font-weight: 400; opacity: 0.85; line-height: 1.6; }
+
+  .differentiator {
+    font-family: var(--body); font-size: 17px; font-style: italic;
+    font-weight: 400; opacity: 0.6; margin-top: 44px;
+  }
+
+  /* ── WORK ── */
+  .cases { display: flex; flex-direction: column; gap: 22px; max-width: 800px; padding-bottom: 50px; }
+
+  .case {
+    background: rgba(255,255,255,0.10);
+    border-radius: 8px;
+    padding: 28px 32px 30px;
+    transition: background 0.25s ease;
+  }
+
+  .case:hover { background: rgba(255,255,255,0.14); }
+
+  .case-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 24px; margin-bottom: 4px;
+  }
+
+  .case-title { font-family: var(--display); font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+
+  .case-industry {
+    font-family: var(--display); font-size: 10px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    opacity: 0.55; white-space: nowrap;
+  }
+
+  .case-hook {
+    font-family: var(--body); font-size: 16px; font-weight: 400;
+    font-style: italic; opacity: 0.65; margin-bottom: 18px;
+  }
+
+  .case-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+  .case-label {
+    font-family: var(--display); font-size: 10px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    opacity: 0.55; margin-bottom: 6px;
+  }
+
+  .case-text { font-family: var(--body); font-size: 16px; font-weight: 400; opacity: 0.88; line-height: 1.65; }
+
+  .case-stats {
+    display: flex;
+    gap: 34px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    flex-wrap: wrap;
+  }
+
+  .stat-value {
+    font-family: var(--display);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-family: var(--display);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  /* ── CONTACT ── */
+  .contact-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 48px; }
+
+  .contact-headline {
+    font-family: var(--display);
+    font-size: clamp(24px, 2.8vw, 40px);
+    font-weight: 600; line-height: 1.12;
+    letter-spacing: -0.03em; max-width: 440px;
+  }
+
+  .contact-links { display: flex; flex-direction: column; gap: 14px; }
+
+  .contact-link {
+    font-family: var(--display); font-size: 15px; font-weight: 500;
+    color: white; text-decoration: none; transition: opacity 0.15s;
+  }
+
+  .contact-link:hover { opacity: 0.7; }
+
+  .contact-link-secondary {
+    font-family: var(--display); font-size: 13px; font-weight: 400;
+    opacity: 0.65; color: white; text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    padding-bottom: 2px; width: fit-content; transition: opacity 0.15s;
+  }
+
+  .contact-link-secondary:hover { opacity: 1; }
+
+  /* ══ MOBILE ══ */
+  @media (max-width: 767px) {
+    :root { --pad: 24px; --footer-h: 42px; }
+
+    nav { height: 50px; }
+    .nav-email { font-size: 11px; max-width: 150px; }
+    .logo-svg { width: 20px; height: 20px; }
+
+    .hero { padding: 30px var(--pad) 28px; }
+    .hero-headline { font-size: clamp(25px, 6.6vw, 34px); margin-bottom: 14px; }
+    .hero-sub { font-size: 17px; max-width: 100%; margin-bottom: 22px; }
+
+    .tabs { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { flex: 0 0 auto; padding: 0 22px; }
+
+    .panel {
+      overflow-y: auto; justify-content: flex-start;
+      padding: 32px var(--pad) 40px;
+      -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 40px), transparent 100%);
+      mask-image: linear-gradient(to bottom, black calc(100% - 40px), transparent 100%);
+    }
+
+    #panel-contact {
+      overflow: hidden; justify-content: center;
+      -webkit-mask-image: none; mask-image: none;
+    }
+
+    .whatwedo { font-size: 17px; line-height: 1.7; }
+    .whatwedo .lead { font-size: 18px; }
+
+    .steps { flex-direction: column; }
+
+    .step {
+      padding-right: 0; padding-bottom: 24px;
+      border-right: none; border-bottom: 1px solid var(--line);
+      margin-right: 0; margin-bottom: 24px;
+      display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: start;
+    }
+
+    .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .step-num { margin-bottom: 0; padding-top: 4px; }
+    .step-body { font-size: 16px; }
+    .differentiator { margin-top: 28px; font-size: 16px; }
+
+    .cases { gap: 16px; padding-bottom: 30px; }
+    .case { padding: 22px 20px 24px; border-radius: 6px; }
+    .case-head { flex-direction: column; gap: 4px; align-items: flex-start; }
+    .case-cols { grid-template-columns: 1fr; gap: 18px; }
+    .case-stats { gap: 24px; margin-top: 18px; padding-top: 16px; }
+    .stat-value { font-size: 22px; }
+    .case-text { font-size: 15px; }
+
+    .contact-inner { flex-direction: column; align-items: flex-start; gap: 26px; }
+    .contact-headline { font-size: 26px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel, .tab-btn::after, .case { transition: none; }
+    .hero-headline, .hero-sub, .hero-cta { animation: none; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-fixed" id="top-fixed">
+  <nav>
+    <div class="brand">
+      <svg class="logo-svg" width="851" height="863" aria-hidden="true" viewBox="0 0 851 863" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTpmODhhMjZjMy0yNWVkLTQ4MzItOGNmZC00YTU4MmMyOGJhN2QAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaKh3LVQK4ex76NBz2jDrzvIAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpkZmExMzFkMC00MDQzLTQ4Y2UtYWE5Mi1lNjFmMTUxMDRjNDdscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoJQ651yaowqelSItCvVOGRQAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggSJjhYsQT2AhHMND6tTcEmvDPflbWy9EPVPEdVxpc/HCkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaJl1EP/kDL0nrKVx9D/10t0AAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCCg84r1eEA+9QQrsfvOk9r2MNvSwpzz+69BtkOqSSyZtmRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiiZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmY4OGEyNmMzLTI1ZWQtNDgzMi04Y2ZkLTRhNTgyYzI4YmE3ZC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjc5MTQwZWViLTFmYjYtNGViYy04MDNkLWQ4OTQ3NzdlODM3YnJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBImOFixBPYCEcw0Pq1NwSa8M9+VtbL0Q9U8R1XGlz8cKJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggZanZmmTbad4ZGX9zikFJHl2fAYkQXpkoUpI81ll+uFmiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggyMVmH1npkDEMXyvci02jbPXkNUIqC7ZwxXGuECZvw6F0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQNg7z6x4tHyMqPiDCM4w6Han7FrxkzSBbwRiOUWr0QNnb4T68nhzf9IEKaCemnvCuduBETEMmMvni5WzrACspIU=</c2pa:manifest></metadata><path d="M459.282 8.09278C459.255 8.09945 459.232 8.10279 459.212 8.10279C459.209 8.10412 459.207 8.10645 459.206 8.10926C459.205 8.11207 459.205 8.11512 459.207 8.11777C459.208 8.12043 459.21 8.12245 459.213 8.12339C459.216 8.12433 459.219 8.1241 459.221 8.12278C460.701 8.62945 462.735 9.59945 465.322 11.0328C487.228 23.1528 504.732 39.8895 517.832 61.2428C536.458 91.6028 540.285 123.823 529.312 157.903C520.972 183.813 503.382 208.033 483.462 227.553C455.782 254.663 421.972 276.863 387.102 295.443C355.582 312.253 323.402 326.823 289.692 340.423C259.832 352.473 240.851 360.543 216.171 370.753C204.745 375.479 195.638 379.173 188.851 381.833C177.265 386.373 168.208 390.179 161.682 393.253C152.395 397.633 140.778 403.689 126.832 411.423C105.578 423.203 86.6549 437.776 70.0615 455.143C49.5115 476.633 35.7515 504.013 31.8815 533.593C28.9215 556.183 31.8015 580.723 37.1615 603.213C40.6349 617.773 44.9915 632.426 50.2315 647.173C50.2531 647.237 50.2507 647.306 50.2248 647.367C50.1989 647.429 50.1513 647.477 50.0915 647.503H50.0815C50.0159 647.532 49.9419 647.536 49.8749 647.514C49.8078 647.492 49.7529 647.445 49.7215 647.383C45.9349 640.569 42.2882 633.889 38.7815 627.343C17.2015 587.063 0.881516 541.333 0.031516 495.373C-0.718484 455.093 11.9215 414.063 37.5315 382.623C47.2182 370.736 58.8882 359.736 72.5415 349.623C100.251 329.093 133.712 312.673 165.452 299.293C185.332 290.906 203.085 283.716 218.712 277.723C247.232 266.773 276.352 256.633 301.362 245.823C328.842 233.949 355.042 221.369 379.962 208.083C397.968 198.476 415.988 187.409 434.022 174.883C446.802 166.003 458.575 155.943 469.342 144.703C495.692 117.183 507.892 78.1128 485.872 43.6928C480.778 35.7395 474.638 28.7161 467.452 22.6228C466.652 21.9428 465.912 21.3961 465.232 20.9828C464.96 20.8236 464.71 20.6249 464.492 20.3928C462.412 18.1794 459.922 16.0861 457.022 14.1128C450.762 9.8461 445.678 6.66612 441.772 4.57279C439.125 3.15946 436.648 1.81944 434.342 0.552772C434.279 0.521687 434.231 0.46969 434.205 0.406013C434.179 0.342335 434.178 0.271125 434.2 0.205085C434.223 0.139045 434.269 0.0824664 434.33 0.0454169C434.39 0.00836735 434.462 -0.00674591 434.532 0.00278384C443.372 1.36278 450.962 4.58277 459.272 7.99277C459.282 7.99782 459.291 8.00551 459.298 8.01487C459.305 8.02423 459.309 8.03486 459.31 8.04548C459.311 8.0561 459.309 8.06622 459.304 8.07462C459.299 8.08302 459.291 8.08934 459.282 8.09278Z" fill="white" fill-opacity="0.4"/><path d="M6.69141 343.533C6.63792 343.58 6.57101 343.611 6.49973 343.619C6.42845 343.628 6.35626 343.614 6.29294 343.58C6.22962 343.547 6.17826 343.494 6.14578 343.43C6.11331 343.366 6.10129 343.294 6.11139 343.223C6.43139 340.836 6.83806 338.469 7.33139 336.123C11.7114 315.489 17.5447 296.023 24.8314 277.723C33.7981 255.189 46.6748 235.893 63.4614 219.833C80.5814 203.443 100.041 191.293 121.001 180.863C150.751 166.063 183.071 153.723 214.901 142.163C244.601 131.363 273.701 120.183 302.441 107.273C319.895 99.4392 336.215 91.0059 351.401 81.9726C364.021 74.4626 376.681 65.3126 385.941 53.7926C394.388 43.2793 397.235 31.4659 394.481 18.3526C393.375 13.0526 392.195 7.55258 390.941 1.85258C390.895 1.64592 390.895 1.5059 390.941 1.43257C391.063 1.23123 391.249 1.07715 391.471 0.995434C391.692 0.913717 391.936 0.9092 392.161 0.982587C393.915 1.54259 395.718 2.56258 397.571 4.04258C405.851 10.6759 412.138 18.8859 416.431 28.6726C428.851 57.0126 415.891 85.6726 396.471 106.843C386.551 117.656 375.181 127.449 362.361 136.223C332.731 156.493 299.151 173.293 266.211 187.563C240.311 198.783 213.351 209.313 177.511 222.803C156.638 230.649 137.835 238.353 121.101 245.913C95.8614 257.313 71.8214 270.783 50.4614 288.793C48.8014 290.193 44.7147 294.076 38.2014 300.443C36.6347 301.976 35.4247 303.319 34.5714 304.473C33.0914 306.463 31.3314 307.743 29.6514 309.773C21.7314 319.286 14.6714 329.459 8.47141 340.293C7.82141 341.413 7.54141 342.773 6.69141 343.533Z" fill="white" fill-opacity="0.3"/><path d="M163.721 119.823C157.421 122.033 150.231 125.493 145.371 127.493C132.845 132.659 122.588 136.946 114.601 140.353C114.535 140.383 114.461 140.39 114.39 140.371C114.32 140.352 114.259 140.309 114.217 140.249C114.175 140.189 114.156 140.117 114.162 140.045C114.169 139.972 114.2 139.904 114.251 139.853L128.301 125.053C128.328 125.026 128.355 125.002 128.381 124.983C129.588 124.223 130.531 123.313 131.211 122.253C131.331 122.067 131.469 121.899 131.621 121.753C140.561 113.239 147.548 106.883 152.581 102.683C175.955 83.1692 201.108 65.9825 228.041 51.1225C246.911 40.7125 266.901 33.1525 288.211 25.8025C309.725 18.3892 330.531 11.9659 350.631 6.53253C355.291 5.27253 359.688 4.32587 363.821 3.69253C363.912 3.67952 364.003 3.69186 364.087 3.72815C364.17 3.76444 364.242 3.82326 364.294 3.89801C364.346 3.97276 364.376 4.06049 364.381 4.15136C364.386 4.24224 364.365 4.33268 364.321 4.41253C354.431 22.1925 338.461 36.9425 321.411 48.0325C307.858 56.8392 293.401 64.8759 278.041 72.1425C248.481 86.1125 215.491 99.1225 187.781 109.953C183.375 111.673 179.385 113.373 175.811 115.053C172.851 116.439 168.821 118.029 163.721 119.823Z" fill="white" fill-opacity="0.2"/><path d="M217.981 810.453C218.022 810.5 218.045 810.559 218.046 810.621C218.048 810.682 218.029 810.743 217.991 810.792C217.954 810.841 217.901 810.876 217.841 810.891C217.781 810.905 217.717 810.899 217.661 810.873C198.801 800.503 182.271 784.333 167.321 766.393C139.751 733.303 120.251 691.373 116.731 648.103C114.538 621.129 118.901 595.723 129.821 571.883C135.601 559.269 143.395 546.729 153.201 534.263C168.341 515.016 187.585 497.186 210.931 480.773C229.938 467.413 249.791 455.349 270.491 444.583C289.271 434.809 304.968 427.086 317.581 421.413C357.715 403.346 394.365 387.436 427.531 373.683C473.241 354.723 517.931 334.163 558.331 306.173C570.865 297.486 582.661 287.619 593.721 276.573C608.051 262.253 620.311 246.643 628.611 228.873C646.031 191.573 644.242 151.303 627.052 114.103C608.112 73.1427 574.401 41.4027 537.861 15.7327C537.655 15.5927 537.525 15.4627 537.471 15.3427C537.439 15.2737 537.429 15.1968 537.442 15.1221C537.455 15.0474 537.491 14.9781 537.545 14.9233C537.599 14.8685 537.668 14.8305 537.744 14.8144C537.82 14.7982 537.899 14.8046 537.971 14.8327C553.158 20.806 567.312 28.406 580.432 37.6327C592.012 45.7794 603.528 55.5927 614.981 67.0727C636.568 88.706 653.531 113.499 665.871 141.453C676.538 165.639 681.508 191.186 680.781 218.093C679.691 257.963 666.651 293.983 643.121 326.983C613.371 368.693 572.631 399.753 528.271 424.623C499.718 440.623 470.378 454.516 440.251 466.303C436.718 467.683 421.275 473.669 393.921 484.263C358.135 498.123 324.001 512.496 291.521 527.383C268.401 537.976 247.878 548.866 229.951 560.053C206.281 574.813 184.711 592.863 169.191 616.283C152.581 641.373 146.711 670.473 151.681 700.193C157.531 735.153 175.701 766.203 199.821 791.783C204.728 796.983 210.781 803.206 217.981 810.453Z" fill="white" fill-opacity="0.5"/><path d="M334.741 854.443C333.035 854.103 331.115 853.483 328.981 852.583C316.991 847.513 305.491 839.463 295.371 830.523C274.941 812.463 258.771 789.033 252.291 763.003C240.091 713.993 265.731 670.883 301.961 639.053C313.241 629.133 325.931 619.573 340.031 610.373C371.491 589.833 404.531 572.933 439.301 557.893C478.355 541.006 503.021 530.583 513.301 526.623C561.421 508.103 609.661 488.663 654.501 462.593C684.911 444.913 713.431 423.553 735.541 396.423C756.675 370.489 769.495 340.706 774.001 307.073C779.701 264.573 770.851 222.473 752.941 183.703C742.381 160.849 729.691 139.279 714.871 118.993C709.551 111.706 706.375 107.403 705.341 106.083C705.061 105.716 704.898 105.339 704.851 104.953C704.846 104.894 704.858 104.836 704.885 104.784C704.911 104.731 704.953 104.688 705.003 104.66C705.053 104.631 705.109 104.618 705.166 104.622C705.223 104.626 705.277 104.647 705.321 104.683C706.515 105.616 708.491 107.256 711.251 109.603C739.945 133.963 763.555 162.839 782.081 196.233C808.455 243.759 819.941 294.896 816.541 349.643C815.708 363.123 813.498 376.839 809.911 390.793C800.081 429.003 778.961 461.963 750.591 489.693C737.478 502.506 722.968 514.409 707.061 525.403C669.271 551.503 627.951 571.863 584.611 590.663C570.085 596.963 550.825 604.539 526.831 613.393C496.485 624.593 464.258 636.883 430.151 650.263C410.298 658.056 390.825 666.576 371.731 675.823C348.865 686.903 328.031 699.973 309.231 715.033C303.891 719.313 298.488 724.736 293.021 731.303C287.501 737.943 283.465 744.429 280.911 750.763C263.141 794.853 302.021 832.193 334.931 853.983C334.986 854.012 335.028 854.06 335.049 854.119C335.07 854.177 335.069 854.241 335.045 854.299C335.021 854.356 334.977 854.403 334.921 854.429C334.865 854.456 334.801 854.461 334.741 854.443Z" fill="white" fill-opacity="0.6"/><path d="M849.451 420.903C849.483 420.797 849.553 420.706 849.647 420.647C849.741 420.588 849.852 420.565 849.962 420.582C850.071 420.599 850.171 420.655 850.243 420.74C850.314 420.824 850.353 420.932 850.351 421.043C850.225 433.096 849.898 444.656 849.371 455.723C848.651 471.063 846.721 487.133 843.971 501.833C839.105 527.853 830.905 551.909 819.371 574.003C796.181 618.413 760.661 652.353 717.201 677.043C702.748 685.249 690.048 691.959 679.101 697.173C617.501 726.493 557.101 745.463 487.151 767.523C468.271 773.476 449.825 780.263 431.811 787.883C418.691 793.429 407.621 799.433 398.601 805.893C388.721 812.973 381.531 822.873 382.991 835.573C384.125 845.473 388.225 853.556 395.291 859.823C395.425 859.947 395.511 860.113 395.536 860.294C395.56 860.475 395.522 860.659 395.426 860.814C395.331 860.969 395.185 861.087 395.012 861.147C394.84 861.207 394.652 861.205 394.481 861.143C379.911 855.493 365.771 840.843 359.461 826.873C349.361 804.533 356.601 783.103 372.751 766.333C381.411 757.339 391.205 749.473 402.131 742.733C414.325 735.213 427.275 728.243 440.981 721.823C469.691 708.383 496.531 697.853 531.171 685.303C556.465 676.136 578.645 667.803 597.711 660.303C664.961 633.853 731.341 602.193 781.431 551.483C804.965 527.656 822.838 499.796 835.051 467.903C838.485 458.943 841.721 449.399 844.761 439.273C846.781 432.543 847.811 426.443 849.451 420.903Z" fill="white"/><path d="M738.792 712.373C738.889 712.337 738.995 712.332 739.094 712.36C739.194 712.387 739.283 712.446 739.347 712.527C739.412 712.608 739.449 712.707 739.453 712.811C739.458 712.914 739.429 713.017 739.372 713.103C727.612 730.473 714.702 745.943 699.002 760.023C663.962 791.453 622.282 813.363 577.112 828.433C532.752 843.243 486.802 853.733 440.752 860.273C433.185 861.353 425.545 862.083 417.832 862.463C417.258 862.49 416.832 862.473 416.552 862.413C416.423 862.386 416.302 862.33 416.198 862.25C416.094 862.17 416.008 862.067 415.948 861.95C415.888 861.832 415.854 861.703 415.85 861.57C415.845 861.437 415.87 861.305 415.922 861.183C416.895 858.91 418.422 856.543 420.502 854.083C427.802 845.423 436.795 838.483 447.482 833.263C460.522 826.89 472.918 821.726 484.672 817.773C495.925 813.993 514.958 808.09 541.772 800.063C556.998 795.503 575.305 789.403 596.692 781.763C641.685 765.696 684.348 745.57 724.682 721.383C726.582 720.243 728.772 718.833 731.252 717.153C735.102 714.553 736.962 713.093 738.792 712.373Z" fill="white" fill-opacity="0.7"/></svg>
+      <span class="wordmark">Blue Meridian Ops</span>
+    </div>
+    <a href="mailto:hello@thebluemeridian.co" class="nav-email">hello@thebluemeridian.co</a>
+  </nav>
+
+  <div class="hero">
+    <h1 class="hero-headline">We find where your operation loses time, then we build the fix.</h1>
+    <p class="hero-sub">AI automation and workflow consulting for teams that have outgrown how they currently work.</p>
+    <a href="mailto:hello@thebluemeridian.co" class="hero-cta">Get in touch</a>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="panel-what"    onclick="show('what', this)">What we do</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="panel-how"     onclick="show('how', this)">How we work</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="panel-work"    onclick="show('work', this)">Proof of work</button>
+    <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="panel-contact" onclick="show('contact', this)">Contact</button>
+  </div>
+</div>
+
+<div class="panel active scrollable" id="panel-what" role="tabpanel">
+  <div class="whatwedo">
+    <p class="lead">Blue Meridian Ops finds where your operation loses time, then builds the systems to get it back. That usually means AI automation and workflow design, though what it actually means depends on what we find when we look.</p>
+    <p>Most of the operations we see run on knowledge that lives in people's heads, which works fine until the person who knows something steps out of the room, and stops working entirely when they leave the company. Decisions get made from memory, reports get rebuilt by hand every month, and follow-ups go missing somewhere between a conversation and an inbox.</p>
+    <p>It isn't that people are careless. Nothing in the setup was built to catch any of it, so the same work gets done twice and nobody has time to notice.</p>
+    <p>We start by watching how your team actually operates, not how the process doc says it should, then build around what's already there: your tools, your people, your constraints.</p>
+  </div>
+</div>
+
+<div class="panel" id="panel-how" role="tabpanel">
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <div>
+        <div class="step-title">Workflow audit</div>
+        <div class="step-body">We spend time with your team and map where the hours actually go, before we touch anything.</div>
+      </div>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <div>
+        <div class="step-title">Build</div>
+        <div class="step-body">Everything gets made for your tools and your process, so there's nothing generic to work around.</div>
+      </div>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <div>
+        <div class="step-title">Handoff</div>
+        <div class="step-body">We stay until your team is using it properly, because a system nobody adopts is just a nicer version of the problem.</div>
+      </div>
+    </div>
+  </div>
+  <p class="differentiator">We don't arrive with a solution, we arrive with questions.</p>
+</div>
+
+<div class="panel scrollable" id="panel-work" role="tabpanel">
+  <div class="cases">
+
+    <div class="case">
+      <div class="case-head">
+        <div class="case-title">Industrial Operations</div>
+        <div class="case-industry">Industrial — Nigeria</div>
+      </div>
+      <div class="case-hook">Twenty-two years of records, almost none of it usable</div>
+      <div class="case-cols">
+        <div>
+          <div class="case-label">Problem</div>
+          <p class="case-text">Procurement, accounting, the weighbridge and sales each ran on their own system, with someone re-typing the same numbers between them. Reports existed, but they were read in isolation, so nobody could see the business as a whole.</p>
+        </div>
+        <div>
+          <div class="case-label">Solution</div>
+          <p class="case-text">We pulled everything into one place and built a dashboard that reads across all of it. For the first time the team could tell the difference between a normal month, a bad one, and something genuinely changing.</p>
+        </div>
+      </div>
+      <div class="case-stats">
+        <div>
+          <div class="stat-value">22</div>
+          <div class="stat-label">years of data</div>
+        </div>
+        <div>
+          <div class="stat-value">4</div>
+          <div class="stat-label">systems unified</div>
+        </div>
+        <div>
+          <div class="stat-value">1</div>
+          <div class="stat-label">source of truth</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="case">
+      <div class="case-head">
+        <div class="case-title">National Platform</div>
+        <div class="case-industry">Nonprofit — United States</div>
+      </div>
+      <div class="case-hook">Everyone building, nobody building the same thing</div>
+      <div class="case-cols">
+        <div>
+          <div class="case-label">Problem</div>
+          <p class="case-text">Messaging went in several directions at once, across distributed teams and systems with no agreed source of truth, so every new build started with a negotiation about what things were called and where they lived.</p>
+        </div>
+        <div>
+          <div class="case-label">Solution</div>
+          <p class="case-text">We centralised the backend, built a component library, and automated the design system workflow. Fewer questions per build, fewer rounds of revision, and output that finally looked like it came from one organisation.</p>
+        </div>
+      </div>
+      <div class="case-stats">
+        <div>
+          <div class="stat-value">40+</div>
+          <div class="stat-label">components</div>
+        </div>
+        <div>
+          <div class="stat-value">2</div>
+          <div class="stat-label">platforms aligned</div>
+        </div>
+        <div>
+          <div class="stat-value">1</div>
+          <div class="stat-label">design system</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="case">
+      <div class="case-head">
+        <div class="case-title">UK Real Estate</div>
+        <div class="case-industry">Real Estate — United Kingdom</div>
+      </div>
+      <div class="case-hook">Everything saved, nothing findable</div>
+      <div class="case-cols">
+        <div>
+          <div class="case-label">Problem</div>
+          <p class="case-text">Documents and email had no structure at all, which meant every decision started with a search, and some of those searches turned up two versions of the same file.</p>
+        </div>
+        <div>
+          <div class="case-label">Solution</div>
+          <p class="case-text">We built a workflow that sorts, summarises and files everything as it arrives. Information organises itself now, and the project moves at the speed of the decisions rather than the filing.</p>
+        </div>
+      </div>
+      <div class="case-stats">
+        <div>
+          <div class="stat-value">7</div>
+          <div class="stat-label">folders rebuilt</div>
+        </div>
+        <div>
+          <div class="stat-value">19</div>
+          <div class="stat-label">files migrated</div>
+        </div>
+        <div>
+          <div class="stat-value">0</div>
+          <div class="stat-label">manual filing</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="panel" id="panel-contact" role="tabpanel">
+  <div class="contact-inner">
+    <p class="contact-headline">If any of this sounds like your operation, let's talk.</p>
+    <div class="contact-links">
+      <a href="mailto:hello@thebluemeridian.co" class="contact-link">hello@thebluemeridian.co</a>
+      <a href="#" class="contact-link-secondary">Book a call</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-brand">
+    <svg class="logo-svg" width="851" height="863" aria-hidden="true" viewBox="0 0 851 863" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTpmODhhMjZjMy0yNWVkLTQ4MzItOGNmZC00YTU4MmMyOGJhN2QAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaKh3LVQK4ex76NBz2jDrzvIAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpkZmExMzFkMC00MDQzLTQ4Y2UtYWE5Mi1lNjFmMTUxMDRjNDdscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoJQ651yaowqelSItCvVOGRQAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggSJjhYsQT2AhHMND6tTcEmvDPflbWy9EPVPEdVxpc/HCkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaJl1EP/kDL0nrKVx9D/10t0AAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCCg84r1eEA+9QQrsfvOk9r2MNvSwpzz+69BtkOqSSyZtmRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiiZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmY4OGEyNmMzLTI1ZWQtNDgzMi04Y2ZkLTRhNTgyYzI4YmE3ZC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjc5MTQwZWViLTFmYjYtNGViYy04MDNkLWQ4OTQ3NzdlODM3YnJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBImOFixBPYCEcw0Pq1NwSa8M9+VtbL0Q9U8R1XGlz8cKJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggZanZmmTbad4ZGX9zikFJHl2fAYkQXpkoUpI81ll+uFmiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggyMVmH1npkDEMXyvci02jbPXkNUIqC7ZwxXGuECZvw6F0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQNg7z6x4tHyMqPiDCM4w6Han7FrxkzSBbwRiOUWr0QNnb4T68nhzf9IEKaCemnvCuduBETEMmMvni5WzrACspIU=</c2pa:manifest></metadata><path d="M459.282 8.09278C459.255 8.09945 459.232 8.10279 459.212 8.10279C459.209 8.10412 459.207 8.10645 459.206 8.10926C459.205 8.11207 459.205 8.11512 459.207 8.11777C459.208 8.12043 459.21 8.12245 459.213 8.12339C459.216 8.12433 459.219 8.1241 459.221 8.12278C460.701 8.62945 462.735 9.59945 465.322 11.0328C487.228 23.1528 504.732 39.8895 517.832 61.2428C536.458 91.6028 540.285 123.823 529.312 157.903C520.972 183.813 503.382 208.033 483.462 227.553C455.782 254.663 421.972 276.863 387.102 295.443C355.582 312.253 323.402 326.823 289.692 340.423C259.832 352.473 240.851 360.543 216.171 370.753C204.745 375.479 195.638 379.173 188.851 381.833C177.265 386.373 168.208 390.179 161.682 393.253C152.395 397.633 140.778 403.689 126.832 411.423C105.578 423.203 86.6549 437.776 70.0615 455.143C49.5115 476.633 35.7515 504.013 31.8815 533.593C28.9215 556.183 31.8015 580.723 37.1615 603.213C40.6349 617.773 44.9915 632.426 50.2315 647.173C50.2531 647.237 50.2507 647.306 50.2248 647.367C50.1989 647.429 50.1513 647.477 50.0915 647.503H50.0815C50.0159 647.532 49.9419 647.536 49.8749 647.514C49.8078 647.492 49.7529 647.445 49.7215 647.383C45.9349 640.569 42.2882 633.889 38.7815 627.343C17.2015 587.063 0.881516 541.333 0.031516 495.373C-0.718484 455.093 11.9215 414.063 37.5315 382.623C47.2182 370.736 58.8882 359.736 72.5415 349.623C100.251 329.093 133.712 312.673 165.452 299.293C185.332 290.906 203.085 283.716 218.712 277.723C247.232 266.773 276.352 256.633 301.362 245.823C328.842 233.949 355.042 221.369 379.962 208.083C397.968 198.476 415.988 187.409 434.022 174.883C446.802 166.003 458.575 155.943 469.342 144.703C495.692 117.183 507.892 78.1128 485.872 43.6928C480.778 35.7395 474.638 28.7161 467.452 22.6228C466.652 21.9428 465.912 21.3961 465.232 20.9828C464.96 20.8236 464.71 20.6249 464.492 20.3928C462.412 18.1794 459.922 16.0861 457.022 14.1128C450.762 9.8461 445.678 6.66612 441.772 4.57279C439.125 3.15946 436.648 1.81944 434.342 0.552772C434.279 0.521687 434.231 0.46969 434.205 0.406013C434.179 0.342335 434.178 0.271125 434.2 0.205085C434.223 0.139045 434.269 0.0824664 434.33 0.0454169C434.39 0.00836735 434.462 -0.00674591 434.532 0.00278384C443.372 1.36278 450.962 4.58277 459.272 7.99277C459.282 7.99782 459.291 8.00551 459.298 8.01487C459.305 8.02423 459.309 8.03486 459.31 8.04548C459.311 8.0561 459.309 8.06622 459.304 8.07462C459.299 8.08302 459.291 8.08934 459.282 8.09278Z" fill="white" fill-opacity="0.4"/><path d="M6.69141 343.533C6.63792 343.58 6.57101 343.611 6.49973 343.619C6.42845 343.628 6.35626 343.614 6.29294 343.58C6.22962 343.547 6.17826 343.494 6.14578 343.43C6.11331 343.366 6.10129 343.294 6.11139 343.223C6.43139 340.836 6.83806 338.469 7.33139 336.123C11.7114 315.489 17.5447 296.023 24.8314 277.723C33.7981 255.189 46.6748 235.893 63.4614 219.833C80.5814 203.443 100.041 191.293 121.001 180.863C150.751 166.063 183.071 153.723 214.901 142.163C244.601 131.363 273.701 120.183 302.441 107.273C319.895 99.4392 336.215 91.0059 351.401 81.9726C364.021 74.4626 376.681 65.3126 385.941 53.7926C394.388 43.2793 397.235 31.4659 394.481 18.3526C393.375 13.0526 392.195 7.55258 390.941 1.85258C390.895 1.64592 390.895 1.5059 390.941 1.43257C391.063 1.23123 391.249 1.07715 391.471 0.995434C391.692 0.913717 391.936 0.9092 392.161 0.982587C393.915 1.54259 395.718 2.56258 397.571 4.04258C405.851 10.6759 412.138 18.8859 416.431 28.6726C428.851 57.0126 415.891 85.6726 396.471 106.843C386.551 117.656 375.181 127.449 362.361 136.223C332.731 156.493 299.151 173.293 266.211 187.563C240.311 198.783 213.351 209.313 177.511 222.803C156.638 230.649 137.835 238.353 121.101 245.913C95.8614 257.313 71.8214 270.783 50.4614 288.793C48.8014 290.193 44.7147 294.076 38.2014 300.443C36.6347 301.976 35.4247 303.319 34.5714 304.473C33.0914 306.463 31.3314 307.743 29.6514 309.773C21.7314 319.286 14.6714 329.459 8.47141 340.293C7.82141 341.413 7.54141 342.773 6.69141 343.533Z" fill="white" fill-opacity="0.3"/><path d="M163.721 119.823C157.421 122.033 150.231 125.493 145.371 127.493C132.845 132.659 122.588 136.946 114.601 140.353C114.535 140.383 114.461 140.39 114.39 140.371C114.32 140.352 114.259 140.309 114.217 140.249C114.175 140.189 114.156 140.117 114.162 140.045C114.169 139.972 114.2 139.904 114.251 139.853L128.301 125.053C128.328 125.026 128.355 125.002 128.381 124.983C129.588 124.223 130.531 123.313 131.211 122.253C131.331 122.067 131.469 121.899 131.621 121.753C140.561 113.239 147.548 106.883 152.581 102.683C175.955 83.1692 201.108 65.9825 228.041 51.1225C246.911 40.7125 266.901 33.1525 288.211 25.8025C309.725 18.3892 330.531 11.9659 350.631 6.53253C355.291 5.27253 359.688 4.32587 363.821 3.69253C363.912 3.67952 364.003 3.69186 364.087 3.72815C364.17 3.76444 364.242 3.82326 364.294 3.89801C364.346 3.97276 364.376 4.06049 364.381 4.15136C364.386 4.24224 364.365 4.33268 364.321 4.41253C354.431 22.1925 338.461 36.9425 321.411 48.0325C307.858 56.8392 293.401 64.8759 278.041 72.1425C248.481 86.1125 215.491 99.1225 187.781 109.953C183.375 111.673 179.385 113.373 175.811 115.053C172.851 116.439 168.821 118.029 163.721 119.823Z" fill="white" fill-opacity="0.2"/><path d="M217.981 810.453C218.022 810.5 218.045 810.559 218.046 810.621C218.048 810.682 218.029 810.743 217.991 810.792C217.954 810.841 217.901 810.876 217.841 810.891C217.781 810.905 217.717 810.899 217.661 810.873C198.801 800.503 182.271 784.333 167.321 766.393C139.751 733.303 120.251 691.373 116.731 648.103C114.538 621.129 118.901 595.723 129.821 571.883C135.601 559.269 143.395 546.729 153.201 534.263C168.341 515.016 187.585 497.186 210.931 480.773C229.938 467.413 249.791 455.349 270.491 444.583C289.271 434.809 304.968 427.086 317.581 421.413C357.715 403.346 394.365 387.436 427.531 373.683C473.241 354.723 517.931 334.163 558.331 306.173C570.865 297.486 582.661 287.619 593.721 276.573C608.051 262.253 620.311 246.643 628.611 228.873C646.031 191.573 644.242 151.303 627.052 114.103C608.112 73.1427 574.401 41.4027 537.861 15.7327C537.655 15.5927 537.525 15.4627 537.471 15.3427C537.439 15.2737 537.429 15.1968 537.442 15.1221C537.455 15.0474 537.491 14.9781 537.545 14.9233C537.599 14.8685 537.668 14.8305 537.744 14.8144C537.82 14.7982 537.899 14.8046 537.971 14.8327C553.158 20.806 567.312 28.406 580.432 37.6327C592.012 45.7794 603.528 55.5927 614.981 67.0727C636.568 88.706 653.531 113.499 665.871 141.453C676.538 165.639 681.508 191.186 680.781 218.093C679.691 257.963 666.651 293.983 643.121 326.983C613.371 368.693 572.631 399.753 528.271 424.623C499.718 440.623 470.378 454.516 440.251 466.303C436.718 467.683 421.275 473.669 393.921 484.263C358.135 498.123 324.001 512.496 291.521 527.383C268.401 537.976 247.878 548.866 229.951 560.053C206.281 574.813 184.711 592.863 169.191 616.283C152.581 641.373 146.711 670.473 151.681 700.193C157.531 735.153 175.701 766.203 199.821 791.783C204.728 796.983 210.781 803.206 217.981 810.453Z" fill="white" fill-opacity="0.5"/><path d="M334.741 854.443C333.035 854.103 331.115 853.483 328.981 852.583C316.991 847.513 305.491 839.463 295.371 830.523C274.941 812.463 258.771 789.033 252.291 763.003C240.091 713.993 265.731 670.883 301.961 639.053C313.241 629.133 325.931 619.573 340.031 610.373C371.491 589.833 404.531 572.933 439.301 557.893C478.355 541.006 503.021 530.583 513.301 526.623C561.421 508.103 609.661 488.663 654.501 462.593C684.911 444.913 713.431 423.553 735.541 396.423C756.675 370.489 769.495 340.706 774.001 307.073C779.701 264.573 770.851 222.473 752.941 183.703C742.381 160.849 729.691 139.279 714.871 118.993C709.551 111.706 706.375 107.403 705.341 106.083C705.061 105.716 704.898 105.339 704.851 104.953C704.846 104.894 704.858 104.836 704.885 104.784C704.911 104.731 704.953 104.688 705.003 104.66C705.053 104.631 705.109 104.618 705.166 104.622C705.223 104.626 705.277 104.647 705.321 104.683C706.515 105.616 708.491 107.256 711.251 109.603C739.945 133.963 763.555 162.839 782.081 196.233C808.455 243.759 819.941 294.896 816.541 349.643C815.708 363.123 813.498 376.839 809.911 390.793C800.081 429.003 778.961 461.963 750.591 489.693C737.478 502.506 722.968 514.409 707.061 525.403C669.271 551.503 627.951 571.863 584.611 590.663C570.085 596.963 550.825 604.539 526.831 613.393C496.485 624.593 464.258 636.883 430.151 650.263C410.298 658.056 390.825 666.576 371.731 675.823C348.865 686.903 328.031 699.973 309.231 715.033C303.891 719.313 298.488 724.736 293.021 731.303C287.501 737.943 283.465 744.429 280.911 750.763C263.141 794.853 302.021 832.193 334.931 853.983C334.986 854.012 335.028 854.06 335.049 854.119C335.07 854.177 335.069 854.241 335.045 854.299C335.021 854.356 334.977 854.403 334.921 854.429C334.865 854.456 334.801 854.461 334.741 854.443Z" fill="white" fill-opacity="0.6"/><path d="M849.451 420.903C849.483 420.797 849.553 420.706 849.647 420.647C849.741 420.588 849.852 420.565 849.962 420.582C850.071 420.599 850.171 420.655 850.243 420.74C850.314 420.824 850.353 420.932 850.351 421.043C850.225 433.096 849.898 444.656 849.371 455.723C848.651 471.063 846.721 487.133 843.971 501.833C839.105 527.853 830.905 551.909 819.371 574.003C796.181 618.413 760.661 652.353 717.201 677.043C702.748 685.249 690.048 691.959 679.101 697.173C617.501 726.493 557.101 745.463 487.151 767.523C468.271 773.476 449.825 780.263 431.811 787.883C418.691 793.429 407.621 799.433 398.601 805.893C388.721 812.973 381.531 822.873 382.991 835.573C384.125 845.473 388.225 853.556 395.291 859.823C395.425 859.947 395.511 860.113 395.536 860.294C395.56 860.475 395.522 860.659 395.426 860.814C395.331 860.969 395.185 861.087 395.012 861.147C394.84 861.207 394.652 861.205 394.481 861.143C379.911 855.493 365.771 840.843 359.461 826.873C349.361 804.533 356.601 783.103 372.751 766.333C381.411 757.339 391.205 749.473 402.131 742.733C414.325 735.213 427.275 728.243 440.981 721.823C469.691 708.383 496.531 697.853 531.171 685.303C556.465 676.136 578.645 667.803 597.711 660.303C664.961 633.853 731.341 602.193 781.431 551.483C804.965 527.656 822.838 499.796 835.051 467.903C838.485 458.943 841.721 449.399 844.761 439.273C846.781 432.543 847.811 426.443 849.451 420.903Z" fill="white"/><path d="M738.792 712.373C738.889 712.337 738.995 712.332 739.094 712.36C739.194 712.387 739.283 712.446 739.347 712.527C739.412 712.608 739.449 712.707 739.453 712.811C739.458 712.914 739.429 713.017 739.372 713.103C727.612 730.473 714.702 745.943 699.002 760.023C663.962 791.453 622.282 813.363 577.112 828.433C532.752 843.243 486.802 853.733 440.752 860.273C433.185 861.353 425.545 862.083 417.832 862.463C417.258 862.49 416.832 862.473 416.552 862.413C416.423 862.386 416.302 862.33 416.198 862.25C416.094 862.17 416.008 862.067 415.948 861.95C415.888 861.832 415.854 861.703 415.85 861.57C415.845 861.437 415.87 861.305 415.922 861.183C416.895 858.91 418.422 856.543 420.502 854.083C427.802 845.423 436.795 838.483 447.482 833.263C460.522 826.89 472.918 821.726 484.672 817.773C495.925 813.993 514.958 808.09 541.772 800.063C556.998 795.503 575.305 789.403 596.692 781.763C641.685 765.696 684.348 745.57 724.682 721.383C726.582 720.243 728.772 718.833 731.252 717.153C735.102 714.553 736.962 713.093 738.792 712.373Z" fill="white" fill-opacity="0.7"/></svg>
+    <span class="footer-copy">&copy; 2026 Blue Meridian Ops</span>
+  </div>
+</footer>
+
+<script>
+  function setTopOffset() {
+    const topH = document.getElementById('top-fixed').offsetHeight;
+    document.querySelectorAll('.panel').forEach(p => { p.style.top = topH + 'px'; });
+  }
+
+  setTopOffset();
+  window.addEventListener('resize', setTopOffset);
+  window.addEventListener('orientationchange', () => setTimeout(setTopOffset, 200));
+  if (document.fonts) document.fonts.ready.then(setTopOffset);
+  if (window.ResizeObserver) {
+    new ResizeObserver(setTopOffset).observe(document.getElementById('top-fixed'));
+  }
+
+  const TABS = Array.from(document.querySelectorAll('.tab-btn'));
+  const IDS = ['what', 'how', 'work', 'contact'];
+
+  function show(id, btn, updateHash) {
+    if (!IDS.includes(id)) return;
+    const index = IDS.indexOf(id);
+    btn = btn || TABS[index];
+
+    document.querySelectorAll('.panel').forEach(p => {
+      p.classList.remove('active');
+      p.scrollTop = 0;
+    });
+    TABS.forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+      b.setAttribute('tabindex', '-1');
+    });
+
+    document.getElementById('panel-' + id).classList.add('active');
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    btn.setAttribute('tabindex', '0');
+    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+    if (updateHash !== false && location.hash !== '#' + id) {
+      history.pushState(null, '', '#' + id);
+    }
+  }
+
+  // arrow keys move between tabs, home and end jump to the ends
+  TABS.forEach((tab, i) => {
+    tab.setAttribute('tabindex', i === 0 ? '0' : '-1');
+    tab.addEventListener('keydown', e => {
+      let next = null;
+      if (e.key === 'ArrowRight') next = (i + 1) % TABS.length;
+      if (e.key === 'ArrowLeft')  next = (i - 1 + TABS.length) % TABS.length;
+      if (e.key === 'Home')       next = 0;
+      if (e.key === 'End')        next = TABS.length - 1;
+      if (next === null) return;
+      e.preventDefault();
+      show(IDS[next], TABS[next]);
+      TABS[next].focus();
+    });
+  });
+
+  // deep links: /#work opens straight to that panel
+  function openFromHash() {
+    const id = location.hash.replace('#', '');
+    if (IDS.includes(id)) show(id, null, false);
+  }
+
+  window.addEventListener('hashchange', openFromHash);
+  openFromHash();
+</script>
+</body>
+</html>
