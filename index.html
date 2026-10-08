@@ -437,17 +437,45 @@
       padding: 0 18px;
       border-radius: 999px;
       background: rgba(255,255,255,0.10);
+      overflow: hidden;
+      transition: height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  margin-top 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.3s ease;
     }
     .nav-email { font-size: 12px; max-width: none; }
     .logo-svg { width: 20px; height: 20px; }
 
     .hero { padding: 26px var(--pad) 24px; border-bottom: none; }
+
+    /* scroll into a section and the hero folds away; the pills stay pinned */
+    .hero {
+      display: grid; grid-template-rows: 1fr;
+      transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  padding 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hero-inner { min-height: 0; overflow: hidden; transition: opacity 0.3s ease; }
+    body.is-collapsed .hero { grid-template-rows: 0fr; padding-top: 0; padding-bottom: 0; }
+    body.is-collapsed .hero-inner { opacity: 0; }
+    /* while folded, text scrolls under the tab pill, so soften the top edge too */
+    body.is-collapsed .panel:not(#panel-contact) {
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 22px, black calc(100% - 40px), transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0, black 22px, black calc(100% - 40px), transparent 100%);
+    }
+    /* header pill folds away too; the tab pill sticks to the top of the screen */
+    body.is-collapsed nav {
+      height: 0; margin-top: 0; opacity: 0; visibility: hidden;
+      transition: height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  margin-top 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.3s ease, visibility 0s linear 0.45s;
+    }
+    body.is-collapsed .tabs { margin-top: max(12px, env(safe-area-inset-top)); margin-bottom: 12px; }
     .hero-headline { font-size: clamp(25px, 6.6vw, 34px); margin-bottom: 14px; }
     .hero-sub { font-size: 17px; max-width: 100%; margin-bottom: 22px; }
 
     /* tab pill: fills the width, scrolls sideways if the labels don't fit */
     .tabs {
       height: 46px; margin: 0 var(--pad) 8px;
+      transition: margin 0.45s cubic-bezier(0.16, 1, 0.3, 1);
       padding: 4px; gap: 2px;
       border: none; border-radius: 999px;
       background: rgba(255,255,255,0.10);
@@ -512,7 +540,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .panel, .tab-btn::after, .case, .btn, .btn::before { transition: none; }
+    .panel, .tab-btn::after, .case, .btn, .btn::before, .hero, .hero-inner, nav, .tabs { transition: none; }
     .hero-headline, .hero-sub, .hero-cta { animation: none; opacity: 1; }
   }
 </style>
@@ -529,9 +557,11 @@
   </nav>
 
   <div class="hero">
+    <div class="hero-inner">
     <h1 class="hero-headline">We find where your operation loses time, then we build the fix.</h1>
     <p class="hero-sub">AI automation and workflow consulting for teams that have outgrown how they currently work.</p>
     <a href="mailto:hello@thebluemeridian.co" class="hero-cta btn">Get in touch</a>
+    </div>
   </div>
 
   <div class="tabs" role="tablist" aria-label="Sections">
@@ -737,10 +767,39 @@
     btn.setAttribute('tabindex', '0');
     btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
+    setCollapsed(false);
+
     if (updateHash !== false && location.hash !== '#' + id) {
       history.pushState(null, '', '#' + id);
     }
   }
+
+  // mobile: fold the hero away once you scroll into a section, bring it back at the top.
+  // two thresholds (48 down, 6 up) so it can't flicker at the boundary
+  const mobileMQ = window.matchMedia('(max-width: 767px)');
+  const headerEl = document.getElementById('top-fixed');
+  const tabsEl = document.querySelector('.tabs');
+
+  function setCollapsed(on) { document.body.classList.toggle('is-collapsed', on); }
+
+  function onPanelScroll(e) {
+    const panel = e.currentTarget;
+    if (!mobileMQ.matches || !panel.classList.contains('active')) return;
+    const collapsed = document.body.classList.contains('is-collapsed');
+    const top = panel.scrollTop;
+    if (!collapsed && top > 48) {
+      // folding makes the panel taller; if the content would then fit with nothing left to scroll,
+      // the scroll position would snap to 0, reopen the hero and loop. Only fold if some scroll remains.
+      const room = panel.scrollHeight - panel.clientHeight;
+      const gain = headerEl.offsetHeight - (tabsEl.offsetHeight + 24);
+      if (room - gain > 16) setCollapsed(true);
+    } else if (collapsed && top <= 6) {
+      setCollapsed(false);
+    }
+  }
+
+  document.querySelectorAll('.panel').forEach(p => p.addEventListener('scroll', onPanelScroll, { passive: true }));
+  mobileMQ.addEventListener('change', () => setCollapsed(false));
 
   // arrow keys move between tabs, home and end jump to the ends
   TABS.forEach((tab, i) => {
